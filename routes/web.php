@@ -24,6 +24,9 @@ Route::resource('products', ProductController::class);
 // Route to show all Redis keys
 Route::get('/redis-keys', [ProductController::class, 'showRedisKeys']);
 
+// Route to debug cache status
+Route::get('/debug-cache', [ProductController::class, 'debugCache']);
+
 // Example of how you might use these routes (e.g., via Postman or a simple form)
 // GET /products - Get all products (cached)
 // POST /products - Create a new product (invalidates cache)
@@ -31,3 +34,4 @@ Route::get('/redis-keys', [ProductController::class, 'showRedisKeys']);
 // PUT/PATCH /products/{id} - Update a product (invalidates cache)
 // DELETE /products/{id} - Delete a product (invalidates cache)
 // GET /redis-keys - Show all Redis keys
+// GET /debug-cache - Debug cache status for products
