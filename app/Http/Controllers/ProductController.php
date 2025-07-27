@@ -17,61 +17,64 @@ class ProductController extends Controller
      // Define items per page
     const ITEMS_PER_PAGE = 5;
 
-      /**
-     * Display a listing of the resource.
+     /* Display a listing of the resource.
      * Fetches products from Redis cache, if not found, retrieves from DB and caches it.
      */
     public function index()
     {
-        // try {
-        //     $perPage = self::ITEMS_PER_PAGE;
-        //     $page = request()->input('page', 1);
-        //     $cacheKey = self::ALL_PRODUCTS_CACHE_KEY . "_page_" . $page;
-        //     $cachedProducts = Redis::get($cacheKey);
+        try {
+            $perPage = self::ITEMS_PER_PAGE;
+            $page = request()->input('page', 1);
+            $cacheKey = self::ALL_PRODUCTS_CACHE_KEY . "_page_" . $page;
+            $cachedProducts = Redis::get($cacheKey);
 
-        //     if ($cachedProducts) {
-        //         $data = json_decode($cachedProducts, true);
-        //         // Convert each array to an object for Blade compatibility
-        //         $items = array_map(function($item) {
-        //             return (object) $item;
-        //         }, $data['data']);
-        //         $products = new \Illuminate\Pagination\LengthAwarePaginator(
-        //             $items,
-        //             $data['total'],
-        //             $data['per_page'],
-        //             $data['current_page'],
-        //             ['path' => request()->url(), 'query' => request()->query()]
-        //         );
-        //         Log::info("Products loaded from cache for page: {$page}");
-        //     } else {
-        //         $products = Product::latest()->paginate($perPage);
-        //         $cacheData = [
-        //             'data' => $products->items(),
-        //             'total' => $products->total(),
-        //             'per_page' => $products->perPage(),
-        //             'current_page' => $products->currentPage(),
-        //         ];
-        //         Redis::setex($cacheKey, self::CACHE_EXPIRATION_SECONDS, json_encode($cacheData));
-        //         Log::info("Products loaded from database and cached for page: {$page}");
-        //     }
+            if ($cachedProducts) {
+                $data = json_decode($cachedProducts, true);
+                // Convert each array to an object for Blade compatibility
+                $items = array_map(function($item) {
+                    return (object) $item;
+                }, $data['data']);
+                $products = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $items,
+                    $data['total'],
+                    $data['per_page'],
+                    $data['current_page'],
+                    ['path' => request()->url(), 'query' => request()->query()]
+                );
+                Log::info("Products loaded from cache for page: {$page}");
+            } else {
+                $products = Product::latest()->paginate($perPage);
+                $cacheData = [
+                    'data' => $products->items(),
+                    'total' => $products->total(),
+                    'per_page' => $products->perPage(),
+                    'current_page' => $products->currentPage(),
+                ];
+                Redis::setex($cacheKey, self::CACHE_EXPIRATION_SECONDS, json_encode($cacheData));
+                Log::info("Products loaded from database and cached for page: {$page}");
+            }
 
-        //     return view('products.index', compact('products'))
-        //         ->with('i', (request()->input('page', 1) - 1) * 5);
-        // } catch (\Exception $e) {
-        //     Log::error("Error in index method: " . $e->getMessage());
-        //     // Fallback to database if cache fails
-        //     $products = Product::latest()->paginate(5);
-        //     return view('products.index', compact('products'))
-        //         ->with('i', (request()->input('page', 1) - 1) * 5);
-        // }
+        //     return response()->json([
+        //     'message' => 'Product retrieved successfully.',
+        //     'products' => $products
+        // ]);
 
-        
+            return view('products.index', compact('products'))
+                ->with('i', (request()->input('page', 1) - 1) * 5);
+        } catch (\Exception $e) {
+            Log::error("Error in index method: " . $e->getMessage());
+            // Fallback to database if cache fails
+            $products = Product::latest()->paginate(5);
+            return view('products.index', compact('products'))
+                ->with('i', (request()->input('page', 1) - 1) * 5);
+        }
+
+ 
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+/**
+ * Show the form for creating a new resource.
+ */
+public function create()
     {
         return view('products.create');
     }
