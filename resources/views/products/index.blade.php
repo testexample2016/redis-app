@@ -14,6 +14,7 @@
 
             </div>
 
+
             <div class="pull-right">
 
                 <a class="btn btn-success" href="{{ route('products.create') }}"> Create New Product</a>
@@ -36,7 +37,16 @@
 
     @endif
 
-   
+   <form action="{{ route('products.search') }}" method="GET" class="mb-4 flex gap-2">
+    <input type="text"
+           name="q"
+           value="{{ request('q') }}"
+           placeholder="Search products..."
+           class="border rounded p-2 flex-1">
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Search
+    </button>
+</form>
 
     <table class="table table-bordered">
 

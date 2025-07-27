@@ -275,4 +275,25 @@ public function create()
             ], 500);
         }
     }
+
+    public function search(Request $request)
+{
+    $query = $request->input('q');
+    if (!$query) {
+        return redirect()->route('products.index')->with('error', 'Search query cannot be empty.');
+    }
+
+    // Search products by name or detail
+    $products = Product::where('name', 'like', "%{$query}%")
+        ->orWhere('detail', 'like', "%{$query}%")
+        ->paginate(self::ITEMS_PER_PAGE);
+
+    // Clear and refresh the cache
+    $this->clearAllProductCache();
+    $this->refreshProductCache();
+
+    return view('products.index', compact('products'))
+        ->with('i', (request()->input('page', 1) - 1) * self::ITEMS_PER_PAGE);
+}
+
 }

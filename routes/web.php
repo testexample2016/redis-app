@@ -18,8 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Search must come BEFORE show
+Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
+
 // Resource routes for Product CRUD operations
 Route::resource('products', ProductController::class);
+
+
+
 
 // Route to show all Redis keys
 Route::get('/redis-keys', [ProductController::class, 'showRedisKeys']);
