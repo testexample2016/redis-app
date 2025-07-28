@@ -143,8 +143,15 @@ public function create()
 
         Log::info("Product updated: ID {$product->id}, Name: {$product->name}");
 
-        return redirect()->route('products.index')
-                        ->with('success','Product updated successfully');
+        // return redirect()->route('products.index')
+        //                 ->with('success','Product updated successfully');
+
+        // Find the position of the updated product in the sorted list
+    $position = Product::where('id', '>', $product->id)->count() + 1;
+    $page = ceil($position / self::ITEMS_PER_PAGE);
+
+    return redirect()->route('products.index', ['page' => $page])
+        ->with('success', 'Product updated successfully');
     }
 
     /**

@@ -10,7 +10,7 @@
 
             <div class="pull-left">
 
-                <h2>Laravel 8 CRUD Example from scratch </h2>
+                <h2>Laravel 8 CRUD Example with Redis </h2>
 
             </div>
 
@@ -36,18 +36,24 @@
         </div>
 
     @endif
-
-   <form action="{{ route('products.search') }}" method="GET" class="mb-4 flex gap-2">
-    <input type="text"
-           name="q"
-           value="{{ request('q') }}"
-           placeholder="Search products..."
-           class="border rounded p-2 flex-1">
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-        Search
-    </button>
-</form>
-
+    
+<div class="row mb-4 align-items-center">
+    <div class="col-auto">
+        <a class="btn btn-primary" href="{{ route('products.index') }}"> Home</a>
+    </div>
+    <div class="col-auto">
+        <form action="{{ route('products.search') }}" method="GET" class="d-flex gap-2">
+            <input type="text"
+                   name="q"
+                   value="{{ request('q') }}"
+                   placeholder="Search products..."
+                   class="border rounded p-2 flex-1">
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+        </form>
+    </div>
+</div>
     <table class="table table-bordered">
 
         <tr>
