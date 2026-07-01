@@ -16,6 +16,9 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
 
+ // Define items per page
+    const ITEMS_PER_PAGE = 10;
+
 echo "=== Testing Destroy Method ===\n\n";
 
 try {
@@ -71,7 +74,7 @@ try {
     // 5. Refresh cache (simulate what destroy method does)
     echo "5. Refreshing cache...\n";
     $totalProducts = Product::count();
-    $perPage = 5;
+    $perPage = ITEMS_PER_PAGE;
     $totalPages = ceil($totalProducts / $perPage);
     
     for ($page = 1; $page <= $totalPages; $page++) {
