@@ -15,7 +15,7 @@ class ProductController extends Controller
     // Define the cache expiration time in seconds (e.g., 1 hour)
     const CACHE_EXPIRATION_SECONDS = 60; // 60
      // Define items per page
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 10;
 
      /* Display a listing of the resource.
      * Fetches products from Redis cache, if not found, retrieves from DB and caches it.
@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $perPage = self::ITEMS_PER_PAGE;
+            $perPage = self::ITEMS_PER_PAEG;
             $page = request()->input('page', 1);
             $cacheKey = self::ALL_PRODUCTS_CACHE_KEY . "_page_" . $page;
             $cachedProducts = Redis::get($cacheKey);
@@ -60,13 +60,13 @@ class ProductController extends Controller
         // ]);
 
             return view('products.index', compact('products'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+                ->with('i', (request()->input('page', 1) - 1) * self::ITEMS_PER_PAEG);
         } catch (\Exception $e) {
             Log::error("Error in index method: " . $e->getMessage());
             // Fallback to database if cache fails
-            $products = Product::latest()->paginate(5);
+            $products = Product::latest()->paginate(self::ITEMS_PER_PAGE);
             return view('products.index', compact('products'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+                ->with('i', (request()->input('page', 1) - 1) * self::ITEMS_PER_PAGE);
         }
 
  
